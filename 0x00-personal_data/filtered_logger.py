@@ -6,6 +6,8 @@ filtered_logger module  that returns the log message obfuscated
 import re
 from typing import List
 import logging
+import os
+import mysql.connector
 
 PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
@@ -54,7 +56,9 @@ class RedactingFormatter(logging.Formatter):
 
 
 def get_logger() -> logging.Logger:
-    """Returns a logger object"""
+    """
+    Returns a logger object
+    """
     logger = logging.getLogger('user_data')
     logger.setLevel(logging.INFO)
     handler = StreamHandler()
@@ -62,3 +66,20 @@ def get_logger() -> logging.Logger:
     logger.addHandler(handler)
     logger.propagate = False
     return logger
+
+
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    """
+    Returns a connector to the database
+    """
+    username = os.getenv('PERSONAL_DATA_DB_USERNAME', 'root')
+    password = os.getenv('PERSONAL_DATA_DB_PASSWORD', '')
+    host = os.getenv('PERSONAL_DATA_DB_HOST', 'localhost')
+    dbname = os.getenv('PERSONAL_DATA_DB_NAME', 'my_db')
+
+    return mysql.connector.connect(
+        user=username,
+        password=password,
+        host=host,
+        database=dbname
+    )
