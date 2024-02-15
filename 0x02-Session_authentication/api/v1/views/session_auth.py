@@ -1,4 +1,6 @@
-# api/v1/views/session_auth.py
+#!/usr/bin/env python3
+""" Module of Session Auth
+"""
 
 from flask import request, jsonify, current_app
 from api.v1.app import auth
