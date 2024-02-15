@@ -6,7 +6,9 @@ from models.user import User
 from api.v1.views import app_views
 
 
-@app_views.route('/auth_session/login', methods=['POST'], strict_slashes=False)
+@app_views.route('/auth_session/login',
+                 methods=['POST'],
+                 strict_slashes=False)
 def session_login():
     email = request.form.get('email')
     password = request.form.get('password')
@@ -28,3 +30,13 @@ def session_login():
     response.set_cookie(current_app.config['SESSION_NAME'], session_id)
 
     return response, 200
+
+
+@app_views.route('/auth_session/logout',
+                 methods=['DELETE'],
+                 strict_slashes=False)
+def session_logout():
+    if not auth.destroy_session(request):
+        abort(404)
+
+    return jsonify({}), 200
