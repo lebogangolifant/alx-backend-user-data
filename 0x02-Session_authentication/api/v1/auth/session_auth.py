@@ -2,6 +2,7 @@
 """
 Module for SessionAuth class
 """
+
 from api.v1.auth.auth import Auth
 from models.user import User
 import uuid
@@ -43,7 +44,7 @@ class SessionAuth(Auth):
             return None
 
     def destroy_session(self, request=None):
-        """Delete the user session / logout"""
+        """ Delete the user session / logout """
         if request is None:
             return False
 
