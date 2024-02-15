@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-""" Module of Session Auth
+"""
+Module of Session Auth
 """
 
 from flask import request, jsonify, current_app
@@ -12,6 +13,7 @@ from api.v1.views import app_views
                  methods=['POST'],
                  strict_slashes=False)
 def session_login():
+    """ POST /api/v1/auth_session/login """
     email = request.form.get('email')
     password = request.form.get('password')
 
@@ -38,6 +40,7 @@ def session_login():
                  methods=['DELETE'],
                  strict_slashes=False)
 def session_logout():
+    """ POST /api/v1/auth_session/login """
     if not auth.destroy_session(request):
         abort(404)
 
