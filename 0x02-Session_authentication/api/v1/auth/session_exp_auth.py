@@ -9,11 +9,17 @@ import os
 
 
 class SessionExpAuth(SessionAuth):
+    """
+    Session Expiration
+    """
     def __init__(self):
         super().__init__()
         self.session_duration = int(os.getenv('SESSION_DURATION', 0))
 
     def create_session(self, user_id=None):
+        """
+        Create a Session ID
+        """
         session_id = super().create_session(user_id)
         if session_id:
             self.user_id_by_session_id[session_id] = {
@@ -24,6 +30,9 @@ class SessionExpAuth(SessionAuth):
         return None
 
     def user_id_for_session_id(self, session_id=None):
+        """
+        Returns User ID based on Session ID
+        """
         if session_id is None or session_id not in self.user_id_by_session_id:
             return None
 
