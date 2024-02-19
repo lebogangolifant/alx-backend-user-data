@@ -3,7 +3,9 @@
 DB module
 """
 from sqlalchemy import create_engine
+from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.session import Session
 
 from user import Base, User
@@ -40,3 +42,25 @@ class DB:
         self._session.add(user)
         self._session.commit()
         return user
+
+    def find_user_by(self, **kwargs) -> User:
+        """
+        Find a user by given criteria
+        """
+        valid_columns = ['id',
+                         'email',
+                         'hashed_password',
+                         'session_id',
+                         'reset_token']
+
+        for key in kwargs.keys():
+            if key not in valid_columns:
+                raise InvalidRequestError(f"Invalid column name: {key}")
+
+        try:
+            user = self._session.query(User).filter_by(**kwargs).first()
+            if user is None:
+                raise NoResultFound("No user found with the given criteria")
+            return user
+        except NoResultFound:
+            raise NoResultFound("No user found with the given criteria")
