@@ -40,7 +40,7 @@ class Auth:
 
         try:
             self._db.find_user_by(email=email)
-            raise ValueError(f"User {email} already exists")
+            return f"User {email} already exists"
         except NoResultFound:
             pass
 
@@ -56,6 +56,20 @@ class Auth:
 
         try:
             user = self._db.find_user_by(email=email)
-            return checkpw(password.encode('utf-8'), user.hashed_password)
+            return bcrypt.checkpw(password.encode('utf-8'),
+                                  user.hashed_password)
         except NoResultFound:
             return False
+
+    def create_session(self, email: str) -> str:
+        """
+        Create a session for the user
+        """
+        try:
+            found_user = self._db.find_user_by(email=email)
+        except NoResultFound:
+            return None
+
+        session_id = _generate_uuid()
+        self._db.update_user(found_user.id, session_id=session_id)
+        return session_id
