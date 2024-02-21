@@ -23,7 +23,9 @@ def welcome() -> str:
 
 @app.route("/users", methods=["POST"])
 def register_user():
-    """Register a new user"""
+    """
+    Register a new user
+    """
     email = request.form.get("email")
     password = request.form.get("password")
 
@@ -36,6 +38,9 @@ def register_user():
 
 @app.route('/sessions', methods=['POST'])
 def login():
+    """
+    Creates a login function to respond to the POST /sessions route.
+    """
     email = request.form.get('email')
     password = request.form.get('password')
 
@@ -49,6 +54,23 @@ def login():
         return response
     else:
         abort(401)
+
+
+@app.route('/sessions', methods=['DELETE'])
+def logout():
+    """
+    Creates destroy session
+    """
+    session_id = request.cookies.get('session_id')
+    if session_id:
+        user = AUTH.get_user_from_session_id(session_id)
+        if user:
+            AUTH.destroy_session(user.id)
+            return redirect('/')
+        else:
+            abort(403)
+    else:
+        abort(403)
 
 
 if __name__ == "__main__":
