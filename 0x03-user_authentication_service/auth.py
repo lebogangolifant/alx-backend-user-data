@@ -106,3 +106,21 @@ class Auth:
         self._db.commit()
 
         return token
+
+    def update_password(self, reset_token: str, password: str) -> None:
+        """
+        Update user's password using reset_token
+        """
+        user = self._db.find_user_by(reset_token=reset_token)
+
+        if not user:
+            raise ValueError("Invalid reset token")
+
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'),
+                                        bcrypt.gensalt())
+
+        user.hashed_password = hashed_password
+
+        user.reset_token = None
+
+        self._db.commit()
